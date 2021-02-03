@@ -1,0 +1,7 @@
+App\Entity\Category:
+    cat:
+        name: "ValideForSubcategory"
+App\Entity\Subcategory:
+    sub{@cat}:
+        name: "ValideForSubcategory"
+        category: <current()>

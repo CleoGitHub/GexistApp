@@ -1,0 +1,16 @@
+App\Entity\Category:
+    cat:
+        name: "ValideForFeatureValue"
+App\Entity\Subcategory:
+    sub{@cat}:
+        name: "ValideForFeatureValue"
+        category: <current()>
+App\Entity\Feature:
+    feature_{@subcat}:
+        name: "ValideForFeatureValue"
+        subcategory: <current()>
+App\Entity\FeatureValue:
+    featureValue_{@feature_subcat}:
+        value: "ValideForFeatureValue"
+        ord: 1
+        feature: <current()>
