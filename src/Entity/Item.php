@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use App\Services\GeneraterProtectedString;
+use App\Traits\ImgTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Item
 {
-    private const IMG_DIR = "items/";
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -40,23 +39,29 @@ class Item
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Image()
-     */
-    private $img;
-
-    /**
      * @ORM\Column(type="float")
+     * @Assert\NotNull
+     * @Assert\GreaterThan(
+     *     value = 0.5
+     * )
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull
+     * @Assert\GreaterThanOrEqual(
+     *     value=0
+     * )
+     * @Assert\LessThanOrEqual(
+     *     value="100"
+     * )
      */
     private $discount;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $isNew;
 
@@ -68,12 +73,22 @@ class Item
     /**
      * @ORM\ManyToOne(targetEntity=Subcategory::class, inversedBy="items")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $subcategory;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ItemColor::class, mappedBy="item", cascade={"persist"})
+     * @ORM\OrderBy({"position"="ASC"})
+     */
+    private $colors;
 
     public function __construct()
     {
         $this->filters = new ArrayCollection();
+        $this->discount = 0;
+        $this->isNew = false;
+        $this->colors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,38 +116,6 @@ class Item
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getImgFolderDir() {
-        return self::IMG_DIR.$this->getImgFolderName()."/";
-    }
-
-    public function getImgFolderName(): String {
-        return GeneraterProtectedString::generateProtectedFolderName($this->name);
-    }
-
-    public function getImgDir() {
-        return $this->getImgFolderDir().$this->img;
-    }
-
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(File $img): self
-    {
-        $fileName = GeneraterProtectedString::generateProtectedFileName(
-            "homme ".$this->getSubcategory()->getCategory()." ".$this->getSubcategory()
-        );
-        $fileName = $fileName.".".$img->getExtension();
-
-        $fs = new Filesystem();
-        $fs->copy($img->getPathname(), "public/assets/imgs/".$this->getImgFolderDir().$fileName);
-
-        $this->img = $fileName;
 
         return $this;
     }
@@ -209,7 +192,46 @@ class Item
         return $this;
     }
 
+    /**
+     * @return Collection|ItemColor[]
+     */
+    public function getColors(): Collection
+    {
+        return $this->colors;
+    }
+
+    public function addColor(ItemColor $color): self
+    {
+        if (!$this->colors->contains($color)) {
+            $this->colors[] = $color;
+            $color->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeColor(ItemColor $color): self
+    {
+        if ($this->colors->removeElement($color)) {
+            // set the owning side to null (unless already changed)
+            if ($color->getItem() === $this) {
+                $color->setItem(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __toString() {
         return $this->name;
+    }
+
+    /*
+     * Important: override default method in trait ImgTrait
+     */
+    public function generateFileName(): String {
+        return GeneraterProtectedString::generateProtectedFileName(
+            "homme ".$this->getSubcategory()->getCategory()." ".$this->getSubcategory()
+        );
     }
 }

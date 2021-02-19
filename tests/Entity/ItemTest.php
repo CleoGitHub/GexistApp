@@ -3,30 +3,39 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Item;
 use App\Tests\AssertErrors;
 use App\Tests\FakerEntity;
+use App\Tests\Traits\Printer;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpFoundation\File\File;
 
 class ItemTest extends KernelTestCase
 {
-    use FixturesTrait, AssertErrors;
+    use FixturesTrait, AssertErrors, Printer;
 
-    public function getEntity()
+    public function getEntity(?string $nullElement = null): Item
     {
-        return FakerEntity::item();
+        return FakerEntity::item($nullElement);
     }
 
-    public function testValideEntity() {
+    public function testValidEntity() {
+        $this->printTestInfo();
         $this->assertHasErrors($this->getEntity(), 0);
     }
 
-    public function testInvalideBlankName() {
+    public function testInvalidBlankName() {
+        $this->printTestInfo();
         $this->assertHasErrors($this->getEntity()->setName(""), 1);
     }
 
-    public function testInvalideLongName() {
+    public function testInvalidNullName() {
+        $this->printTestInfo();
+        $this->assertHasErrors($this->getEntity("name"), 1);
+    }
+
+    public function testInvalidLongName() {
+        $this->printTestInfo();
         $this->assertHasErrors($this->getEntity()->setName(
             "ValideValideValideValideValideValideValideValideValideValideValideValiValideValideValideValideValideValideValideValideValideValideValideValiValideValideValideValideValideValideValideValideValideValideValideValiValideValideValideValideValideValideValideVal"
         ), 0);
@@ -35,15 +44,53 @@ class ItemTest extends KernelTestCase
         ), 1);
     }
 
-    public function testInvalideBlankDescription() {
+    public function testInvalidBlankDescription() {
+        $this->printTestInfo();
         $this->assertHasErrors($this->getEntity()->setDescription(""), 1);
     }
 
-    public function testValideImgExist() {
-
-        $entity = $this->getEntity();
-
-        $this->assertHasErrors($entity->setImg(new File("tests/files/file.webp")), 0);
-        $this->assertFileExists($entity->getImgDir());
+    public function testInvalidNullDescription() {
+        $this->printTestInfo();
+        $this->assertHasErrors($this->getEntity("description"), 1);
     }
+
+    public function testInvalidMinPrice() {
+        $this->printTestInfo();
+        $entity = $this->getEntity();
+        $this->assertHasErrors($entity->setPrice(0.45), 1);
+    }
+
+    public function testInvalidNullPrice() {
+        $this->printTestInfo();
+        $this->assertHasErrors($this->getEntity("price"), 1);
+    }
+
+    public function testValidZeroValueDiscount() {
+        $this->printTestInfo();
+        $entity = $this->getEntity();
+        $this->assertHasErrors($entity->setDiscount(0), 0);
+    }
+
+    public function testInvalidMinDiscount() {
+        $this->printTestInfo();
+        $entity = $this->getEntity();
+        $this->assertHasErrors($entity->setDiscount(-1), 1);
+    }
+
+    public function testInvalidMaxDiscount() {
+        $this->printTestInfo();
+        $entity = $this->getEntity();
+        $this->assertHasErrors($entity->setDiscount(101), 1);
+    }
+
+    public function testValidNullDiscount() {
+        $this->printTestInfo();
+        $this->assertHasErrors($this->getEntity("discount"), 0);
+    }
+
+    public function testValidNullNew() {
+        $this->printTestInfo();
+        $this->assertHasErrors($this->getEntity("isNew"), 0);
+    }
+
 }

@@ -35,6 +35,7 @@ class Subcategory
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subcategories")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $category;
 

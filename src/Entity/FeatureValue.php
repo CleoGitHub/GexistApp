@@ -16,8 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="Deux options de filtres ne peuvent avoir la même valeur pour le même filtre"
  * )
  * @UniqueEntity(
- *     fields={"ord","feature"},
- *     message="Deux ordres de filtres ne peuvent avoir la même valeur pour le même filtre"
+ *     fields={"position","feature"},
+ *     message="Deux filtres ne peuvent avoir la même position pour le même filtre"
  * )
  */
 class FeatureValue
@@ -38,12 +38,14 @@ class FeatureValue
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      */
-    private $ord;
+    private $position;
 
     /**
      * @ORM\ManyToOne(targetEntity=Feature::class, inversedBy="featureValues")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $feature;
 
@@ -74,14 +76,14 @@ class FeatureValue
         return $this;
     }
 
-    public function getOrd(): ?int
+    public function getPosition(): ?int
     {
-        return $this->ord;
+        return $this->position;
     }
 
-    public function setOrd(int $ord): self
+    public function setPosition(int $position): self
     {
-        $this->ord = $ord;
+        $this->position = $position;
 
         return $this;
     }

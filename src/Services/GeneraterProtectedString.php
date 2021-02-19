@@ -32,11 +32,15 @@ class GeneraterProtectedString
 
         $retour = GeneraterProtectedString::escapeAccent($string);
 
-        $retour = str_replace(" ","-",$retour);
+        $retour = str_replace("/"," ",$retour);
+
+        $retour = str_replace("."," ",$retour);
+
+        $retour = preg_replace("/[ ]+/","-",trim($retour));
 
         $retour = strtolower($retour);
 
-        return substr(md5(uniqid()),0,10)."-".$retour;
+        return substr(md5(uniqid()),0,20)."-".$retour;
     }
 
     static public function generateProtectedFolderName($string):String
@@ -44,7 +48,13 @@ class GeneraterProtectedString
 
         $retour = GeneraterProtectedString::escapeAccent($string);
 
-        $retour = str_replace(" ","_",$retour);
+        $retour = str_replace("."," ",$retour);
+
+        $retour = str_replace("/"," ",$retour);
+
+        $retour = preg_replace("/[ ]+/","_",trim($retour));
+
+        $retour = str_replace("-"," ",$retour);
 
         return strtolower($retour);
     }

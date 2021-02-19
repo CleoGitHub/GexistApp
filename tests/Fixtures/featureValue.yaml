@@ -12,5 +12,5 @@ App\Entity\Feature:
 App\Entity\FeatureValue:
     featureValue_{@feature_subcat}:
         value: "ValideForFeatureValue"
-        ord: 1
+        position: 1
         feature: <current()>

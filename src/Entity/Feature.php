@@ -35,11 +35,13 @@ class Feature
     /**
      * @ORM\ManyToOne(targetEntity=Subcategory::class, inversedBy="features")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $subcategory;
 
     /**
      * @ORM\OneToMany(targetEntity=FeatureValue::class, mappedBy="feature", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"position" = "ASC" })
      */
     private $featureValues;
 

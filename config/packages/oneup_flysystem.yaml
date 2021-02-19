@@ -1,0 +1,9 @@
+# Read the documentation: https://github.com/1up-lab/OneupFlysystemBundle/tree/master/Resources/doc/index.md
+oneup_flysystem:
+    adapters:
+        public_image_adaptater:
+            local:
+                directory: '%kernel.project_dir%/public/assets/images/'
+    filesystems:
+        public_image_filesystem:
+            adapter: public_image_adaptater

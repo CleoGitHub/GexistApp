@@ -4,10 +4,12 @@ namespace App\DataFixtures;
 
 use App\Entity\Subcategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Category;
 
-class SubcategoryFixtures extends Fixture
+class SubcategoryFixtures  extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -42,5 +44,17 @@ class SubcategoryFixtures extends Fixture
             $manager->persist($cat);
         }
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['item'];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            CategoryFixtures::class
+        ];
     }
 }

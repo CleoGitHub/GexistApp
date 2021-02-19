@@ -9,9 +9,11 @@ use App\Entity\FeatureValue;
 use App\Entity\Subcategory;
 use App\Repository\SubcategoryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class FeatureValueFixtures extends Fixture
+class FeatureValueFixtures  extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
 
     public function load(ObjectManager $manager)
@@ -78,7 +80,7 @@ class FeatureValueFixtures extends Fixture
                     $count++;
                     $feature->addFeatureValue(
                         (new FeatureValue())
-                            ->setOrd($ord)
+                            ->setPosition($ord)
                             ->setValue($featureValueName)
                     );
                 }
@@ -86,5 +88,17 @@ class FeatureValueFixtures extends Fixture
             }
         }
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['item'];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            FeatureFixtures::class
+        ];
     }
 }

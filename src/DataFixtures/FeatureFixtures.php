@@ -7,9 +7,11 @@ namespace App\DataFixtures;
 use App\Entity\Feature;
 use App\Entity\Subcategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class FeatureFixtures extends Fixture
+class FeatureFixtures  extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -73,4 +75,15 @@ class FeatureFixtures extends Fixture
         $manager->flush();
     }
 
+    public static function getGroups(): array
+    {
+        return ['item'];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            SubcategoryFixtures::class
+        ];
+    }
 }

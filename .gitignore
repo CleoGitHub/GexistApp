@@ -15,3 +15,7 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 /public/assets/imgs/
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
