@@ -10,25 +10,28 @@ use App\Entity\FeatureValue;
 use App\Entity\ItemImg;
 use App\Entity\Item;
 use App\Entity\ItemColor;
+use App\Entity\Size;
 use App\Entity\Subcategory;
 use Faker\Factory;
 
 class FakerEntity
 {
-    public static function category($nullElement = null):Category {
+    public static function category($nullElement = null):Category
+    {
         $cat = new Category();
         if($nullElement != "name")
-            $cat->setName("ValideForCategory");
+            $cat->setName("ValidForCategory");
 
         return $cat;
     }
 
-    public static function subcategory($nullElement = null): Subcategory {
-        $cat = self::category()->setName("ValideForSubcategory");
+    public static function subcategory($nullElement = null): Subcategory
+    {
+        $cat = self::category()->setName("ValidForSubcategory");
 
         $subcat = new Subcategory();
         if($nullElement != "name")
-            $subcat->setName("ValideForSubcategory");
+            $subcat->setName("ValidForSubcategory");
 
         if($nullElement != "category")
             $subcat->setCategory($cat);
@@ -36,15 +39,16 @@ class FakerEntity
         return $subcat;
     }
 
-    public static function feature($nullElement = null): Feature {
+    public static function feature($nullElement = null): Feature
+    {
         $subcat = self::subcategory();
-        $subcat->getCategory()->setName("ValideForFeature");
-        $subcat->setName("ValideForFeature");
+        $subcat->getCategory()->setName("ValidForFeature");
+        $subcat->setName("ValidForFeature");
 
         $feat = new Feature();
 
         if($nullElement != "name")
-            $feat->setName("ValideForFeature");
+            $feat->setName("ValidForFeature");
 
         if($nullElement != "subcategory")
             $feat->setSubcategory($subcat);
@@ -52,19 +56,20 @@ class FakerEntity
         return $feat;
     }
 
-    public static function featureValue($nullElement = null): FeatureValue {
+    public static function featureValue($nullElement = null): FeatureValue
+    {
         $feat = self::feature();
         $subcat = $feat->getSubcategory();
-        $subcat->getCategory()->setName("ValideForFeatureValue");
-        $subcat->setName("ValideForFeatureValue");
-        $feat->setName("ValideForFeatureValue");
+        $subcat->getCategory()->setName("ValidForFeatureValue");
+        $subcat->setName("ValidForFeatureValue");
+        $feat->setName("ValidForFeatureValue");
 
         $featValue = new FeatureValue();
         if($nullElement != "position")
             $featValue->setPosition(2);
 
         if($nullElement != "value")
-            $featValue->setValue("ValideForFeatureValue");
+            $featValue->setValue("ValidForFeatureValue");
 
         if($nullElement != "feature")
             $featValue->setFeature($feat);
@@ -72,18 +77,19 @@ class FakerEntity
         return $featValue;
     }
 
-    public static function item($nullElement = null): Item {
+    public static function item($nullElement = null): Item
+    {
         $faker = \Faker\Factory::create('fr_FR');
 
         $subcat = self::subcategory();
 
-        $subcat->getCategory()->setName("ValideForItem");
-        $subcat->setName("ValideForItem");
+        $subcat->getCategory()->setName("ValidForItem");
+        $subcat->setName("ValidForItem");
 
         $item = new Item();
 
         if($nullElement != "name")
-            $item->setName("ValideForItem");
+            $item->setName("ValidForItem");
 
         if($nullElement != "subcategory")
             $item->setSubcategory($subcat);
@@ -103,15 +109,16 @@ class FakerEntity
         return $item;
     }
 
-    public static function itemColor($nullElement = null) {
+    public static function itemColor($nullElement = null): ItemColor
+    {
 
         $faker = Factory::create('fr_FR');
 
         $item = self::item();
 
-        $item->getSubcategory()->getCategory()->setName("ValideForItemColor");
-        $item->getSubcategory()->setName("ValideForItemColor");
-        $item->setName("ValideForItemColor");
+        $item->getSubcategory()->getCategory()->setName("ValidForItemColor");
+        $item->getSubcategory()->setName("ValidForItemColor");
+        $item->setName("ValidForItemColor");
 
         $itemColor = new ItemColor();
 
@@ -139,9 +146,9 @@ class FakerEntity
         $itemColor = self::itemColor();
         $item = $itemColor->getItem();
 
-        $item->getSubcategory()->getCategory()->setName("ValideForImgItemColor");
-        $item->getSubcategory()->setName("ValideForImgItemColor");
-        $item->setName("ValideForImgItemColor");
+        $item->getSubcategory()->getCategory()->setName("ValidForImgItemColor");
+        $item->getSubcategory()->setName("ValidForImgItemColor");
+        $item->setName("ValidForImgItemColor");
 
         $imgItemColor = new ItemImg($itemColor);
 
@@ -155,5 +162,21 @@ class FakerEntity
             $imgItemColor->setImgMedium("tests/files/file.webp");
 
         return $imgItemColor;
+    }
+
+    public static function size(?string $nullElement): Size
+    {
+        $subcategory = self::subcategory();
+        $subcategory->setName("ValidForSize");;
+        $subcategory->getCategory()->setName("ValidForSize");
+        $size = new Size($subcategory);
+
+        if($nullElement != "value")
+            $size->setValue("sizeA");
+
+        if($nullElement != "position")
+            $size->setPosition(1);
+
+        return $size;
     }
 }

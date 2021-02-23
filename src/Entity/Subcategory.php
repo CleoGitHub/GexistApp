@@ -49,10 +49,16 @@ class Subcategory
      */
     private $items;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Size::class, mappedBy="subcategory", cascade={"persist"})
+     */
+    private $sizes;
+
     public function __construct()
     {
         $this->features = new ArrayCollection();
         $this->items = new ArrayCollection();
+        $this->sizes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,5 +152,35 @@ class Subcategory
 
     public function __toString() {
         return $this->name;
+    }
+
+    /**
+     * @return Collection|Size[]
+     */
+    public function getSizes(): Collection
+    {
+        return $this->sizes;
+    }
+
+    public function addSize(Size $size): self
+    {
+        if (!$this->sizes->contains($size)) {
+            $this->sizes[] = $size;
+            $size->setSubcategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSize(Size $size): self
+    {
+        if ($this->sizes->removeElement($size)) {
+            // set the owning side to null (unless already changed)
+            if ($size->getSubcategory() === $this) {
+                $size->setSubcategory(null);
+            }
+        }
+
+        return $this;
     }
 }

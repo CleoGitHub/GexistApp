@@ -22,21 +22,18 @@ class ItemImg
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private $img;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private $imgSmall;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private $imgMedium;
 

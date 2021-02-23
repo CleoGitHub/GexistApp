@@ -7,10 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ItemColorRepository::class)
+ * @UniqueEntity(
+ *     fields={"color","item"},
+ *     message="Ce produit a déjà une déclinaison dans cette couleur"
+ * )
  */
 class ItemColor
 {
@@ -82,6 +87,9 @@ class ItemColor
      */
     public function setColor(string $color): self
     {
+        if($this->colors == null)
+            $this->colors = include "ColorEnum.php";
+
         if(!in_array($color, $this->colors))
             throw new Exception("La couleur rentré est inconnue");
 

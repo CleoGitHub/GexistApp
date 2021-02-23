@@ -28,7 +28,7 @@ class ItemImgTest extends KernelTestCase
     public function testInvalidNullImg()
     {
         $this->printTestInfo();
-        $this->assertHasErrors($this->getEntity("img"), 2);
+        $this->assertHasErrors($this->getEntity("img"), 1);
     }
 
     public function testInvalidBlankImg()
@@ -40,7 +40,7 @@ class ItemImgTest extends KernelTestCase
     public function testInvalidNullImgSmall()
     {
         $this->printTestInfo();
-        $this->assertHasErrors($this->getEntity("imgSmall"), 2);
+        $this->assertHasErrors($this->getEntity("imgSmall"), 1);
     }
 
     public function testInvalidBlankImgSmall()
@@ -52,7 +52,7 @@ class ItemImgTest extends KernelTestCase
     public function testInvalidNullImgMedium()
     {
         $this->printTestInfo();
-        $this->assertHasErrors($this->getEntity("imgMedium"), 2);
+        $this->assertHasErrors($this->getEntity("imgMedium"), 1);
     }
 
     public function testInvalidBlankImgMedium()
