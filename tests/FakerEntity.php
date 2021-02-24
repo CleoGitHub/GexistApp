@@ -11,6 +11,7 @@ use App\Entity\ItemImg;
 use App\Entity\Item;
 use App\Entity\ItemColor;
 use App\Entity\Size;
+use App\Entity\Stock;
 use App\Entity\Subcategory;
 use Faker\Factory;
 
@@ -164,7 +165,7 @@ class FakerEntity
         return $imgItemColor;
     }
 
-    public static function size(?string $nullElement): Size
+    public static function size(?string $nullElement = null): Size
     {
         $subcategory = self::subcategory();
         $subcategory->setName("ValidForSize");;
@@ -178,5 +179,29 @@ class FakerEntity
             $size->setPosition(1);
 
         return $size;
+    }
+
+    public static function stock(?string $nullElement): Stock
+    {
+        $color = self::itemColor();
+        $subcategory = $color->getItem()->getSubcategory();
+        $subcategory->setName("ValidForStock");
+        $subcategory->getCategory()->setName("ValidForStock");
+        $size = new Size($subcategory);
+        $size->setValue("SizeA");
+        $size->setPosition(1);
+
+        $stock = new Stock();
+
+        if($nullElement != "quantity")
+            $stock->setQuantity(1);
+
+        if($nullElement != "size")
+            $stock->setSize($size);
+
+        if($nullElement != "color")
+            $stock->setColor($color);
+
+        return $stock;
     }
 }

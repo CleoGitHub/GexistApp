@@ -58,12 +58,18 @@ class ItemColor
     private $position;
 
     /**
+     * @ORM\OneToMany(targetEntity=Stock::class, mappedBy="color")
+     */
+    private $stocks;
+
+    /**
      * ItemColor constructor.
      */
     public function __construct()
     {
         $this->colors = include "ColorEnum.php";
         $this->imgs = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -169,5 +175,35 @@ class ItemColor
         $subcat = $this->getItem()->getSubcategory();
         $cat = $subcat->getCategory();
         return "homme ".$cat->getName()." ".$subcat->getName()." ".$this->getColor();
+    }
+
+    /**
+     * @return Collection|Stock[]
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->setColor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getColor() === $this) {
+                $stock->setColor(null);
+            }
+        }
+
+        return $this;
     }
 }
