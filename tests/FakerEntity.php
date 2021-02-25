@@ -10,6 +10,7 @@ use App\Entity\FeatureValue;
 use App\Entity\ItemImg;
 use App\Entity\Item;
 use App\Entity\ItemColor;
+use App\Entity\Mark;
 use App\Entity\Size;
 use App\Entity\Stock;
 use App\Entity\Subcategory;
@@ -203,5 +204,24 @@ class FakerEntity
             $stock->setColor($color);
 
         return $stock;
+    }
+
+    public static function mark(?string $nullElement): Mark
+    {
+        $item = self::item();
+
+        $item->getSubcategory()->getCategory()->setName("ValidForMark");
+        $item->getSubcategory()->setName("ValidForMark");
+        $item->setName("ValidForMark");
+
+        $mark = new Mark();
+
+        if($nullElement != "item")
+            $mark->setItem($item);
+
+        if($nullElement != "grade")
+            $mark->setGrade(mt_rand(0,5));
+
+        return $mark;
     }
 }

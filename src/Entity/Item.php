@@ -83,12 +83,18 @@ class Item
      */
     private $colors;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Mark::class, mappedBy="item")
+     */
+    private $marks;
+
     public function __construct()
     {
         $this->filters = new ArrayCollection();
         $this->discount = 0;
         $this->isNew = false;
         $this->colors = new ArrayCollection();
+        $this->marks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,5 +239,35 @@ class Item
         return GeneraterProtectedString::generateProtectedFileName(
             "homme ".$this->getSubcategory()->getCategory()." ".$this->getSubcategory()
         );
+    }
+
+    /**
+     * @return Collection|Mark[]
+     */
+    public function getMarks(): Collection
+    {
+        return $this->marks;
+    }
+
+    public function addMark(Mark $mark): self
+    {
+        if (!$this->marks->contains($mark)) {
+            $this->marks[] = $mark;
+            $mark->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMark(Mark $mark): self
+    {
+        if ($this->marks->removeElement($mark)) {
+            // set the owning side to null (unless already changed)
+            if ($mark->getItem() === $this) {
+                $mark->setItem(null);
+            }
+        }
+
+        return $this;
     }
 }
