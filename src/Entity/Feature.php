@@ -27,7 +27,7 @@ class Feature
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\Regex("/^.{1,25}$/")
+     * @Assert\Length(max=25)
      * @Assert\NotBlank()
      */
     private $name;

@@ -62,7 +62,7 @@ class FeatureValueTest extends KernelTestCase
             $this->getEntity()
                 ->setPosition(1)
                 ->setFeature($cat['feature_subcat'])
-                ->setValue("Valide")
+                ->setValue("Valid")
             , 1
         );
     }

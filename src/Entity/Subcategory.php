@@ -27,7 +27,7 @@ class Subcategory
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Assert\Regex("/^.{1,100}$/")
+     * @Assert\Length(max=100)
      * @Assert\NotBlank
      */
     private $name;

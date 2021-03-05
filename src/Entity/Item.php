@@ -24,7 +24,7 @@ class Item
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\Regex("/^.{1,255}$/")
+     * @Assert\Length(max=255)
      */
     private $name;
 
@@ -37,21 +37,15 @@ class Item
     /**
      * @ORM\Column(type="float")
      * @Assert\NotNull
-     * @Assert\GreaterThan(
-     *     value = 0.5
-     * )
+     * @Assert\GreaterThan(value = 0.5)
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull
-     * @Assert\GreaterThanOrEqual(
-     *     value=0
-     * )
-     * @Assert\LessThanOrEqual(
-     *     value="100"
-     * )
+     * @Assert\GreaterThanOrEqual(value=0)
+     * @Assert\LessThanOrEqual(value="100")
      */
     private $discount;
 

@@ -25,7 +25,7 @@ class Category
     /**
      * @ORM\Column(type="string", length=70)
      * @Assert\NotBlank()
-     * @Assert\Regex("/^.{1,70}$/")
+     * @Assert\Length(max=70)
      */
     private $name;
 
