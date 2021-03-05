@@ -4,13 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use App\Services\GeneraterProtectedString;
-use App\Traits\ImgTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use PHPUnit\Util\Exception;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -88,6 +84,11 @@ class Item
      */
     private $marks;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=ItemCollection::class, mappedBy="items")
+     */
+    private $collections;
+
     public function __construct()
     {
         $this->filters = new ArrayCollection();
@@ -95,6 +96,7 @@ class Item
         $this->isNew = false;
         $this->colors = new ArrayCollection();
         $this->marks = new ArrayCollection();
+        $this->collections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -266,6 +268,33 @@ class Item
             if ($mark->getItem() === $this) {
                 $mark->setItem(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemCollection[]
+     */
+    public function getCollections(): Collection
+    {
+        return $this->collections;
+    }
+
+    public function addCollection(ItemCollection $collection): self
+    {
+        if (!$this->collections->contains($collection)) {
+            $this->collections[] = $collection;
+            $collection->addItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollection(ItemCollection $collection): self
+    {
+        if ($this->collections->removeElement($collection)) {
+            $collection->removeItem($this);
         }
 
         return $this;
