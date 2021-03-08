@@ -27,7 +27,7 @@ class Size
 
     /**
      * @ORM\Column(type="string", length=10)
-     * @Assert\Regex("/^.{1,10}$/")
+     * @Assert\Length(max=10)
      * @Assert\NotBlank()
      */
     private $value;

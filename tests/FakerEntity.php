@@ -7,6 +7,7 @@ namespace App\Tests;
 use App\Entity\Category;
 use App\Entity\Feature;
 use App\Entity\FeatureValue;
+use App\Entity\ItemCollection;
 use App\Entity\ItemImg;
 use App\Entity\Item;
 use App\Entity\ItemColor;
@@ -223,5 +224,40 @@ class FakerEntity
             $mark->setGrade(mt_rand(0,5));
 
         return $mark;
+    }
+
+    public static function itemCollection(?string $nullElement = null): ItemCollection
+    {
+        $faker = Factory::create("fr_FR");
+
+        $item = self::item();
+        $item->getSubcategory()->setName("ValidForItemCollection");
+        $item->getSubcategory()->getCategory()->setName("ValidForItemCollection");
+        $item->setName("ValidForItemCollection");
+
+        $collection = new ItemCollection();
+
+        if($nullElement != 'name')
+            do {
+                $collection->setName($faker->sentence(4));
+            }while(strlen($collection->getName()) > 70);
+
+        if($nullElement != 'subtitle')
+            do {
+                $collection->setSubtitle($faker->sentence(5));
+            }while(strlen($collection->getSubtitle()) > 70);
+
+        if($nullElement != 'description')
+            do {
+                $collection->setDescription($faker->word()." & ".$faker->word());
+            }while(strlen($collection->getDescription()) > 70);
+
+        if($nullElement != 'image')
+            $collection->setImage($faker->word());
+
+        if($nullElement != 'isActive')
+            $collection->setIsActive(true);
+
+        return $collection;
     }
 }

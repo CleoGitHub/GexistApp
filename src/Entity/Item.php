@@ -4,13 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use App\Services\GeneraterProtectedString;
-use App\Traits\ImgTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use PHPUnit\Util\Exception;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -28,7 +24,7 @@ class Item
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\Regex("/^.{1,255}$/")
+     * @Assert\Length(max=255)
      */
     private $name;
 
@@ -41,21 +37,15 @@ class Item
     /**
      * @ORM\Column(type="float")
      * @Assert\NotNull
-     * @Assert\GreaterThan(
-     *     value = 0.5
-     * )
+     * @Assert\GreaterThan(value = 0.5)
      */
     private $price;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull
-     * @Assert\GreaterThanOrEqual(
-     *     value=0
-     * )
-     * @Assert\LessThanOrEqual(
-     *     value="100"
-     * )
+     * @Assert\GreaterThanOrEqual(value=0)
+     * @Assert\LessThanOrEqual(value="100")
      */
     private $discount;
 
@@ -88,6 +78,11 @@ class Item
      */
     private $marks;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=ItemCollection::class, mappedBy="items")
+     */
+    private $collections;
+
     public function __construct()
     {
         $this->filters = new ArrayCollection();
@@ -95,6 +90,7 @@ class Item
         $this->isNew = false;
         $this->colors = new ArrayCollection();
         $this->marks = new ArrayCollection();
+        $this->collections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -266,6 +262,33 @@ class Item
             if ($mark->getItem() === $this) {
                 $mark->setItem(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ItemCollection[]
+     */
+    public function getCollections(): Collection
+    {
+        return $this->collections;
+    }
+
+    public function addCollection(ItemCollection $collection): self
+    {
+        if (!$this->collections->contains($collection)) {
+            $this->collections[] = $collection;
+            $collection->addItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollection(ItemCollection $collection): self
+    {
+        if ($this->collections->removeElement($collection)) {
+            $collection->removeItem($this);
         }
 
         return $this;
