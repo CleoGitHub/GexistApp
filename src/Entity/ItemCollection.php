@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ItemCollectionRepository;
+use App\Services\UploadHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -91,6 +92,13 @@ class ItemCollection
         return $this;
     }
 
+
+    public function getImagePath(): string
+    {
+        return UploadHelper::getImgPublicPath(UploadHelper::ITEM_COLLECTION_IMG."/".$this->getImage());
+    }
+
+
     public function getImage(): ?string
     {
         return $this->image;
@@ -139,6 +147,7 @@ class ItemCollection
     {
         if (!$this->items->contains($item)) {
             $this->items[] = $item;
+            $item->addCollection($this);
         }
 
         return $this;

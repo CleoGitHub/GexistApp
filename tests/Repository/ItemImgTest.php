@@ -25,15 +25,15 @@ class ItemImgTest extends KernelTestCase
 
     public function testTestsImgItemColorInsertion() {
         $this->printTestInfo();
-        $this->init();
+        $this->initItemImg();
         $expected = self::$container->get(ItemColorRepository::class)->count([]) * 2;
         $this->assertEquals($expected, self::$container->get(ItemImgRepository::class)->count([]));
-        $this->clearFiles();
+        $this->clearFilesItemImg();
     }
 
     public function testTestAddImg() {
         $this->printTestInfo();
-        $this->init();
+        $this->initItemImg();
         $manager = self::$container->get('doctrine')->getManager();
         $itemColor = self::$container->get(ItemColorRepository::class)->findOneBy([]);
         $id = $itemColor->getId();
@@ -57,6 +57,6 @@ class ItemImgTest extends KernelTestCase
 
         $this->assertNotNull(self::$container->get(ItemImgRepository::class)->findOneBy(["id" => $idImg]));
 
-        $this->clearFiles();
+        $this->clearFilesItemImg();
     }
 }

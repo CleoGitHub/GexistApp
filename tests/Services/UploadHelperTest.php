@@ -3,6 +3,8 @@
 
 namespace App\Tests\Services;
 
+use App\Entity\ItemCollection;
+use App\Repository\ItemCollectionRepository;
 use App\Tests\Fixtures\CategoryFixtures;
 use App\Tests\Fixtures\FeatureFixtures;
 use App\Tests\Fixtures\FeatureValueFixtures;
@@ -23,7 +25,7 @@ class UploadHelperTest extends KernelTestCase
 {
     use Printer, FixturesTrait, Files;
 
-    public function testUniqueFilename() {
+    /*public function testUniqueFilename() {
         self::bootKernel();
         $uploadHelper = self::$container->get(UploadHelper::class);
         $uniqids = [];
@@ -32,11 +34,11 @@ class UploadHelperTest extends KernelTestCase
         }
 
         $this->assertSameSize($uniqids, array_unique($uniqids));
-    }
+    }*/
 
-    public function testUploadFiles() {
+    public function testUploadFilesItemImg() {
         $this->printTestInfo();
-        $this->init();
+        $this->initItemImg();
 
         $imgs = self::$container->get(ItemImgRepository::class)->findBy([],[],100);
 
@@ -49,6 +51,24 @@ class UploadHelperTest extends KernelTestCase
             $this->assertFileExists("public".$img->getImgMediumPath());
         }
 
-        $this->clearFiles();
+        $this->clearFilesItemImg();
+    }
+
+
+
+    public function testUploadFilesItemCollection() {
+        $this->printTestInfo();
+        $this->initItemCollection();
+
+        $imgs = self::$container->get(ItemCollectionRepository::class)->findBy([],[],100);
+
+        /**
+         * @var ItemCollection $img
+         */
+        foreach ($imgs as $img) {
+            $this->assertFileExists("public".$img->getImagePath());
+        }
+
+        $this->clearFilesItemCollection();
     }
 }

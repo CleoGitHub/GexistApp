@@ -36,7 +36,7 @@ class UploadHelper
         //Remove old file
         if($existingFilename)
             try {
-                $result = $this->filesystem->delete(self::ITEM_IMG.'/'.$existingFilename);
+                $result = $this->filesystem->delete(self::ITEM_COLLECTION_IMG.'/'.$existingFilename);
 
                 if(!$result)
                     throw new Exception("Could not delete old uploaded file \"$existingFilename\"");
@@ -120,12 +120,12 @@ class UploadHelper
         return '/assets/images/'.$path;
     }
 
-    public function uniqid() :string
+    private function uniqid() :string
     {
         return substr(str_shuffle(md5(uniqid())), 0, 13);
     }
 
-    public function getThumbnailInfos(): array
+    private function getThumbnailInfos(): array
     {
         return [
             "type" => [
@@ -145,7 +145,7 @@ class UploadHelper
         ];
     }
 
-    public function fileExist(String $path): bool
+    private function fileExist(String $path): bool
     {
         //Check if filename already exist
         try {
@@ -156,7 +156,7 @@ class UploadHelper
         return $exist;
     }
 
-    public function writeStream(File $file, String $path)
+    private function writeStream(File $file, String $path)
     {
         //Write the file
         $stream = fopen($file->getPathname(), 'r');
@@ -174,7 +174,7 @@ class UploadHelper
             fclose($stream);
     }
 
-    public function write(String $pathFile, String $path)
+    private function write(String $pathFile, String $path)
     {
         //Write the file
         $result = $this->filesystem->write(

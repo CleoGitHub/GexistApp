@@ -5,9 +5,11 @@ namespace App\Tests\Fixtures;
 
 
 use App\Entity\Item;
+use App\Entity\ItemCollection;
 use App\Entity\ItemColor;
 use App\Entity\ItemImg;
 use App\Services\UploadHelper;
+use App\Tests\FakerEntity;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -32,18 +34,21 @@ class ItemCollectionFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        $items = $manager->getRepository(Item::class)->findBy([],["item" => "ASC"]);
-        $lastSubcat = null;
-
+        $items = $manager->getRepository(Item::class)->findBy([]);
 
         $files = [
             __DIR__."/../Files/file_collection.jpg"
         ];
 
+        $collection = FakerEntity::itemCollection();
+        $filename = $this->uploadHelper->uploadItemCollectionImage($this->fakeUploadImg($files), $collection->getImage());
+        $collection->setImage($filename);
 
-//        foreach ($items as $item) {
-//
-//        }
+        foreach ($items as $item) {
+            $collection->addItem($item);
+        }
+
+        $manager->persist($collection);
         $manager->flush();
     }
 

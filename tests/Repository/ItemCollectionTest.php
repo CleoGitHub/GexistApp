@@ -11,25 +11,18 @@ use App\Tests\Fixtures\ItemCollectionFixtures;
 use App\Tests\Fixtures\SubcategoryFixtures;
 use App\Tests\Fixtures\ItemFixtures;
 use App\Repository\ItemRepository;
+use App\Tests\Traits\Files;
 use App\Tests\Traits\Printer;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ItemCollectionTest extends KernelTestCase
 {
-    use FixturesTrait, Printer;
+    use FixturesTrait, Printer, Files;
 
     public function testTestsCollectionInsertion() {
         $this->printTestInfo();
-        self::bootKernel();
-        $this->loadFixtures([
-            CategoryFixtures::class,
-            SubcategoryFixtures::class,
-            FeatureFixtures::class,
-            FeatureValueFixtures::class,
-            ItemFixtures::class,
-            ItemCollectionFixtures::class
-        ]);
+        $this->initItemCollection();
         $collection = self::$container->get(ItemCollectionRepository::class)->findOneBy([]);
         $this->assertNotNull($collection);
         $items = self::$container->get(ItemRepository::class)->findAll();
@@ -39,5 +32,6 @@ class ItemCollectionTest extends KernelTestCase
          */
         foreach ($items as $item)
             $this->assertEquals($collection, $item->getCollections()[0]);
+        $this->clearFilesItemCollection();
     }
 }
