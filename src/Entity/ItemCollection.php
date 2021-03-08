@@ -61,6 +61,7 @@ class ItemCollection
     public function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->isActive = false;
     }
 
     public function getId(): ?int

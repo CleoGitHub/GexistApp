@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ParadeRepository;
+use App\Services\UploadHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ParadeRepository::class)
@@ -21,11 +23,13 @@ class Parade
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $video;
 
@@ -34,9 +38,15 @@ class Parade
      */
     private $items;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->isActive = false;
     }
 
     public function getId(): ?int
@@ -61,6 +71,11 @@ class Parade
         return $this->video;
     }
 
+    public function getVideoPath(): string
+    {
+        return UploadHelper::getVideoPublicPath(UploadHelper::PARADE_VIDEO."/".$this->getVideo());
+    }
+
     public function setVideo(string $video): self
     {
         $this->video = $video;
@@ -80,6 +95,7 @@ class Parade
     {
         if (!$this->items->contains($item)) {
             $this->items[] = $item;
+            $item->addParade($this);
         }
 
         return $this;
@@ -87,7 +103,20 @@ class Parade
 
     public function removeItem(Item $item): self
     {
-        $this->items->removeElement($item);
+        if($this->items->removeElement($item))
+            $item->removeParade($this);
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }
