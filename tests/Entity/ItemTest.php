@@ -4,6 +4,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Item;
+use App\Entity\Mark;
 use App\Tests\AssertErrors;
 use App\Tests\FakerEntity;
 use App\Tests\Traits\Printer;
@@ -93,4 +94,14 @@ class ItemTest extends KernelTestCase
         $this->assertHasErrors($this->getEntity("isNew"), 0);
     }
 
+    public function testAverageMark() {
+        $this->printTestInfo();
+        $item = FakerEntity::item();
+        for($i = 0; $i < 18; $i++){
+            $mark = new Mark();
+            $mark->setGrade($i%6);
+            $item->addMark($mark);
+        }
+        $this->assertEquals(2.5,$item->getAverageMark());
+    }
 }

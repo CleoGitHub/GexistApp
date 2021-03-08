@@ -224,10 +224,6 @@ class Item
         return $this;
     }
 
-    public function __toString() {
-        return $this->name;
-    }
-
     /*
      * Important: override default method in trait ImgTrait
      */
@@ -267,6 +263,15 @@ class Item
         return $this;
     }
 
+    public function getAverageMark(): float
+    {
+       $marks = $this->marks->toArray();
+
+       return array_reduce($marks, function($sum ,$mark){
+            return $sum + $mark->getGrade();
+       }, 0)/count($marks);
+    }
+
     /**
      * @return Collection|ItemCollection[]
      */
@@ -292,5 +297,9 @@ class Item
         }
 
         return $this;
+    }
+
+    public function __toString() {
+        return $this->name;
     }
 }
