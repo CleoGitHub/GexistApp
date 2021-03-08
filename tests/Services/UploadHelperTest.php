@@ -3,8 +3,12 @@
 
 namespace App\Tests\Services;
 
+use App\Entity\Item;
 use App\Entity\ItemCollection;
+use App\Entity\Parade;
 use App\Repository\ItemCollectionRepository;
+use App\Repository\ItemRepository;
+use App\Repository\ParadeRepository;
 use App\Tests\Fixtures\CategoryFixtures;
 use App\Tests\Fixtures\FeatureFixtures;
 use App\Tests\Fixtures\FeatureValueFixtures;
@@ -70,5 +74,20 @@ class UploadHelperTest extends KernelTestCase
         }
 
         $this->clearFilesItemCollection();
+    }
+
+    public function testUploadFilesParade() {
+        $this->printTestInfo();
+        $this->initParade();
+
+        $parades = self::$container->get(ParadeRepository::class)->findBy([],[],100);
+
+        /**
+         * @var Parade $parade
+         */
+        foreach ($parades as $parade)
+            $this->assertFileExists("public".$parade->getVideoPath());
+
+        $this->clearFilesParade();
     }
 }

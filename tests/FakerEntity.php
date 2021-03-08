@@ -12,6 +12,7 @@ use App\Entity\ItemImg;
 use App\Entity\Item;
 use App\Entity\ItemColor;
 use App\Entity\Mark;
+use App\Entity\Parade;
 use App\Entity\Size;
 use App\Entity\Stock;
 use App\Entity\Subcategory;
@@ -230,10 +231,10 @@ class FakerEntity
     {
         $faker = Factory::create("fr_FR");
 
-        $item = self::item();
-        $item->getSubcategory()->setName("ValidForItemCollection");
-        $item->getSubcategory()->getCategory()->setName("ValidForItemCollection");
-        $item->setName("ValidForItemCollection");
+//        $item = self::item();
+//        $item->getSubcategory()->setName("ValidForItemCollection");
+//        $item->getSubcategory()->getCategory()->setName("ValidForItemCollection");
+//        $item->setName("ValidForItemCollection");
 
         $collection = new ItemCollection();
 
@@ -259,5 +260,19 @@ class FakerEntity
             $collection->setIsActive(true);
 
         return $collection;
+    }
+
+    public static function parade(?string $nullElement = null): Parade
+    {
+        $faker = Factory::create("fr_FR");
+        $parade = new Parade();
+
+        if($nullElement != "title")
+            $parade->setTitle($faker->sentence);
+
+        if($nullElement != "video")
+            $parade->setVideo($faker->word.".mp4");
+
+        return $parade;
     }
 }
