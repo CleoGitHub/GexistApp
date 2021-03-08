@@ -83,6 +83,11 @@ class Item
      */
     private $collections;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Parade::class, mappedBy="items")
+     */
+    private $parades;
+
     public function __construct()
     {
         $this->filters = new ArrayCollection();
@@ -91,6 +96,7 @@ class Item
         $this->colors = new ArrayCollection();
         $this->marks = new ArrayCollection();
         $this->collections = new ArrayCollection();
+        $this->parades = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -289,6 +295,33 @@ class Item
     {
         if ($this->collections->removeElement($collection)) {
             $collection->removeItem($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Parade[]
+     */
+    public function getParades(): Collection
+    {
+        return $this->parades;
+    }
+
+    public function addParade(Parade $parade): self
+    {
+        if (!$this->parades->contains($parade)) {
+            $this->parades[] = $parade;
+            $parade->addItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParade(Parade $parade): self
+    {
+        if ($this->parades->removeElement($parade)) {
+            $parade->removeItem($this);
         }
 
         return $this;
