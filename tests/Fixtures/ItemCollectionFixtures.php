@@ -4,18 +4,18 @@
 namespace App\Tests\Fixtures;
 
 
-use App\Entity\ItemImg;
+use App\Entity\Item;
 use App\Entity\ItemColor;
+use App\Entity\ItemImg;
 use App\Services\UploadHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use League\Flysystem\FilesystemInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 
-class ItemImgFixtures extends Fixture
+class ItemCollectionFixtures extends Fixture
 {
     private $uploadHelper;
     private $finder;
@@ -32,25 +32,18 @@ class ItemImgFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        $colors = $manager->getRepository(ItemColor::class)->findBy([],["item" => "ASC"]);
+        $items = $manager->getRepository(Item::class)->findBy([],["item" => "ASC"]);
         $lastSubcat = null;
 
-        /**
-         * @var ItemColor $color
-         */
-        foreach ($colors as $color) {
-            $files = [
-                __DIR__."/../Files/file.webp"
-            ];
-            for($i = 0; $i < 2; $i++) {
-                $img = new ItemImg($color);
-                $filenames = $this->uploadHelper->uploadItemImage($this->fakeUploadImg($files), $color, $img->getImg());
-                $img->setImg($filenames["normal"]);
-                $img->setImgSmall($filenames["small"]);
-                $img->setImgMedium($filenames["medium"]);
-            }
-            $manager->persist($color);
-        }
+
+        $files = [
+            __DIR__."/../Files/file_collection.jpg"
+        ];
+
+
+//        foreach ($items as $item) {
+//
+//        }
         $manager->flush();
     }
 
