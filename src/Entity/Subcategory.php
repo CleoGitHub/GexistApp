@@ -23,7 +23,7 @@ class Subcategory
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:category"})
+     * @Groups({"get:category"})
      */
     private $id;
 

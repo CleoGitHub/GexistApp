@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"read:category"}}
+ *     normalizationContext={"groups"={"get:category"}},
+ *     collectionOperations={
+ *          "get"
+ *      }
  * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @UniqueEntity("name")
@@ -24,7 +28,7 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:category"})
+     * @Groups({"get:category"})
      */
     private $id;
 
@@ -32,13 +36,13 @@ class Category
      * @ORM\Column(type="string", length=70)
      * @Assert\NotBlank()
      * @Assert\Length(max=70)
-     * @Groups({"read:category"})
+     * @Groups({"get:category"})
      */
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Subcategory::class, mappedBy="category", cascade={"persist"})
-     * @Groups({"read:category"})
+     * @Groups({"get:category"})
      */
     private $subcategories;
 
@@ -70,6 +74,16 @@ class Category
     public function getSubcategories(): Collection
     {
         return $this->subcategories;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubcategoriesId(): array
+    {
+        return $this->subcategories->map(function($subcat){
+            return $subcat->getId();
+        })->toArray();
     }
 
     public function addSubcategory(Subcategory $subcategory): self
