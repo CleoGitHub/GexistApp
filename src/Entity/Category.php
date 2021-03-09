@@ -2,14 +2,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read:category"}}
+ * )
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @UniqueEntity("name")
  */
@@ -19,6 +24,7 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:category"})
      */
     private $id;
 
@@ -26,11 +32,13 @@ class Category
      * @ORM\Column(type="string", length=70)
      * @Assert\NotBlank()
      * @Assert\Length(max=70)
+     * @Groups({"read:category"})
      */
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Subcategory::class, mappedBy="category", cascade={"persist"})
+     * @Groups({"read:category"})
      */
     private $subcategories;
 
